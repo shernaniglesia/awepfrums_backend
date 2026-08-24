@@ -47,7 +47,7 @@ app.use("/year-sections", yearSectionRoutes);
 app.use("/equipments", equipmentRoutes);
 app.use("/equipment-reservations", equipmentReservationRoutes);
 
-app.listen(5000, '0.0.0.0', () => {
+app.listen(25691, '0.0.0.0', () => {
     console.log("Server running hahahaha...");
 });
 
