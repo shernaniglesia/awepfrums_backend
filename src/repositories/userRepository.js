@@ -20,17 +20,17 @@ class UserRepository {
     }
 
     async fetchAllVerifiedAdmins() {
-        const [rows] = await pool.query('SELECT admin_id AS id, admin_name AS name, admin_email AS email, "Admin" AS role FROM admin WHERE is_verified = 1');
+        const [rows] = await pool.query("SELECT admin_id AS id, admin_name AS name, admin_email AS email, 'Admin' AS role FROM admin WHERE is_verified = 1");
         return rows;
     }
 
     async fetchAllVerifiedInstructors() {
-        const [rows] = await pool.query('SELECT instructor_id AS id, instructor_name AS name, instructor_email AS email, "Instructor" AS role FROM instructor WHERE instructor_name != "TBA" AND is_verified = 1');
+        const [rows] = await pool.query("SELECT instructor_id AS id, instructor_name AS name, instructor_email AS email, 'Instructor' AS role FROM instructor WHERE instructor_name != 'TBA' AND is_verified = 1");
         return rows;
     }
 
     async fetchAllVerifiedStudents() {
-        const [rows] = await pool.query('SELECT student_id AS id, student_name AS name, student_email AS email, "Student" AS role FROM student WHERE is_verified = 1');
+        const [rows] = await pool.query("SELECT student_id AS id, student_name AS name, student_email AS email, 'Student' AS role FROM student WHERE is_verified = 1");
         return rows;
     }
 
