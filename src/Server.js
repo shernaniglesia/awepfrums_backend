@@ -33,6 +33,27 @@ app.get('/', (req, res) => {
     res.send('Hello from your backend!');
 });
 
+// Example Express route to test Aiven connection
+app.get('/test-db', async (req, res) => {
+  try {
+    // Replace 'users' with an actual table name from your imported database
+    const [rows] = await db.query('SELECT * FROM student LIMIT 5'); 
+    
+    res.json({
+      status: 'success',
+      message: 'Connected to Aiven MySQL successfully!',
+      data: rows
+    });
+  } catch (error) {
+    console.error('Database connection error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to connect to database',
+      error: error.message
+    });
+  }
+});
+
 app.use("/auth", authRoutes); 
 app.use("/dashboards", dashboardRoutes); 
 app.use("/notifications", notificationRoutes);
