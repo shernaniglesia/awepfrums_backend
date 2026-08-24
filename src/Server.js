@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { initExpirationCron } = require('./tasks/expirationCron');
+const { pool } = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
@@ -37,7 +38,7 @@ app.get('/', (req, res) => {
 app.get('/test-db', async (req, res) => {
   try {
     // Replace 'users' with an actual table name from your imported database
-    const [rows] = await db.query('SELECT * FROM student LIMIT 5'); 
+    const [rows] = await pool.query('SELECT * FROM student LIMIT 5'); 
     
     res.json({
       status: 'success',
