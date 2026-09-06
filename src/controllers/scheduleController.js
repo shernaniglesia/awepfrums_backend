@@ -111,6 +111,40 @@ class ScheduleController {
         }
     }
 
+    async  updateScheduleTime(req, res) {
+        try {
+            const { schedule_id, oid, date, start_time, end_time, room_id } = req.body;
+
+            if (!oid || !date || !start_time || !end_time || !room_id) {
+                return res.status(400).json({ 
+                    message: "Missing required fields: oid, date, start_time, end_time, or room_id" 
+                });
+            }
+
+            const updated = await scheduleService.updateScheduleTime({
+                scheduleId: schedule_id,
+                schedulePerDayId: oid,
+                date,
+                startTime: start_time,
+                endTime: end_time,
+                roomId: room_id
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: "Schedule occurrence updated successfully.",
+                data: updated
+            });
+
+        } catch (error) {
+            console.error("Error updating schedule time:", error);
+            return res.status(500).json({ 
+                success: false, 
+                message: error.message || "Failed to update schedule time." 
+            });
+        }
+    }
+
     async deleteSchedules(req, res) {
         try {
             const { ids } = req.query;
