@@ -335,6 +335,10 @@ class ScheduleService {
         }
     }
 
+    async  updateScheduleTime(payload) {
+        return await scheduleRepository.updateScheduleTime(payload);
+    }
+
     async deleteSchedules(idsString) {
         if (!idsString) return { success: false, status: 400, message: `No id provided.`};
         const idList = idsString.split(",");
