@@ -200,7 +200,10 @@ class ScheduleService {
     }
 
     async getScheduleByRoom(roomId) {
-        const rows = await scheduleRepository.fetchSchedulesByRoom(roomId);
+        const semester = await scheduleRepository.fetchActiveSemester();
+        if (!semester) return { success: false, status: 400, message: `No active semester.`};
+        
+        const rows = await scheduleRepository.fetchSchedulesByRoom(roomId, semester.sem_id);
         return rows.map((row) => ({
             schedule_id: row.schedule_id,
             subject_id: row.subject_id,
