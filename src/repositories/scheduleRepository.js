@@ -50,7 +50,7 @@ class ScheduleRepository {
             LEFT JOIN subject subj ON s.subject_id = subj.subject_id
             LEFT JOIN instructor ins ON s.instructor_id = ins.instructor_id
             LEFT JOIN year_section ys ON s.year_section_id = ys.year_section_id
-            WHERE s.room_id = ? AND s.sem_id = ?
+            WHERE s.room_id = ? AND s.sem_id = 8
             GROUP BY s.schedule_id, subj.subject_code, ins.instructor_name, 
                     ys.year_section_name, s.schedule_start_time, s.schedule_end_time
             ORDER BY s.schedule_start_time ASC`,
