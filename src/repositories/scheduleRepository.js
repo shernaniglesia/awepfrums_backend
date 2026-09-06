@@ -207,6 +207,72 @@ class ScheduleRepository {
         );
     }
 
+    async  updateScheduleTime({ scheduleId, schedulePerDayId, date, startTime, endTime, roomId }) {
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const [[original]] = await connection.execute(
+                `SELECT s.* 
+                FROM schedule_per_day spd
+                JOIN schedule s ON spd.schedule_id = s.schedule_id
+                WHERE spd.schedule_per_day_id = ?`,
+                [schedulePerDayId]
+            );
+
+            if (!original) {
+                throw new Error(`Schedule occurrence ID ${schedulePerDayId} not found.`);
+            }
+
+            const [newScheduleResult] = await connection.execute(
+                `INSERT INTO schedule 
+                (sem_id, room_id, instructor_id, subject_id, year_section_id, schedule_start_time, schedule_end_time)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    original.sem_id,
+                    roomId,
+                    original.instructor_id,
+                    original.subject_id,
+                    original.year_section_id,
+                    startTime,
+                    endTime
+                ]
+            );
+
+            const newScheduleId = newScheduleResult.insertId;
+
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const dayOfWeek = dayNames[new Date(date).getDay()];
+
+            await connection.execute(
+                `UPDATE schedule_per_day 
+                SET schedule_id = ?, 
+                    schedule_per_day_date = ?, 
+                    schedule_per_day_day = ?
+                WHERE schedule_per_day_id = ?`,
+                [newScheduleId, date, dayOfWeek, schedulePerDayId]
+            );
+
+            await connection.commit();
+
+            return {
+                schedulePerDayId,
+                newScheduleId,
+                date,
+                startTime,
+                endTime,
+                roomId
+            };
+
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    }
+
     async deleteScheduleDays(connection, scheduleId) {
         await connection.query(`DELETE FROM schedule_per_day WHERE schedule_id=?`, [scheduleId]);
     }
